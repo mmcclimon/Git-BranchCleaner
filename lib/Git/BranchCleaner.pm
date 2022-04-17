@@ -32,19 +32,12 @@ has _is_eternal => (
   default => sub ($self) { +{ map {; $_ => 1 } $self->eternal_branches->@* } }
 );
 
-has [qw(
-  local_shas
-  remote_shas
-  other_upstreams
-)] => (
+has [qw( local_shas remote_shas other_upstreams )] => (
   is => 'rwp',
   init_arg => undef,
 );
 
-has [qw(
-  to_push
-  to_delete
-)] => (
+has [qw( to_push to_delete )] => (
   is => 'ro',
   default => sub { [] },
 );
@@ -187,7 +180,6 @@ sub process_refs ($self) {
                : $remote_sha ne $local_sha         ? '_process_mismatched'
                : confess 'unreachable';
 
-
     $self->$method($branch);
   }
 }
@@ -207,7 +199,6 @@ sub _process_external ($self, $branch) {
     _log(ok => "$branch matches $tracking_branch");
     return;
   }
-
 
   _log(update => "$branch; $tracking_branch has changed; will update local");
   $self->to_update->{$branch} = $upstream_sha;
