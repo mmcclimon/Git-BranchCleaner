@@ -57,7 +57,7 @@ has interactive => (
   default => 1,
 );
 
-sub run ($self, $interactive = 1) {
+sub run ($self) {
   $self->assert_local_ok;
   $self->do_initial_fetch;
   $self->read_refs;
