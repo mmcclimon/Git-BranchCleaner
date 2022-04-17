@@ -1,5 +1,6 @@
 use v5.30;
 package Git::BranchCleaner;
+# ABSTRACT: clean up your local git branches
 
 use Moo;
 use experimental 'signatures';
