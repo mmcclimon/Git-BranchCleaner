@@ -236,7 +236,7 @@ sub check_merged ($self, $branch) {
   my ($patch_id) = split /\s+/, $patch;
 
   # this stinks
-  my @sha = run_git(qw(log --no-merges --format=%h --grep), $subject);
+  my @sha = run_git(qw(log --no-merges --format=%h -n 10 --grep), $subject);
 
   # find the matching patch id, if we have one
   for my $sha (@sha) {
@@ -246,6 +246,10 @@ sub check_merged ($self, $branch) {
     if ($check_id eq $patch_id) {
       return substr $sha, 0, 8;
     }
+  }
+
+  if (@sha == 10) {
+    _log(warn => "$branch: subject matched > 10 commits in main; assuming unmerged");
   }
 
   return;
