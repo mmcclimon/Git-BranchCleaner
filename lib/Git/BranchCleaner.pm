@@ -212,7 +212,7 @@ sub _process_matched ($self, $branch) {
   _log(ok => "$branch already up to date");
 }
 
-sub _process_mismatch ($self, $branch) {
+sub _process_mismatched ($self, $branch) {
   my $local = $self->local_shas->{$branch};
   my $remote = $self->remote_shas->{$branch};
 
