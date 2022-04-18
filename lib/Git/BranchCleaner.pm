@@ -235,12 +235,12 @@ sub check_merged ($self, $branch) {
   my $patch = qx(git diff-tree -p $local | git patch-id);
   my ($patch_id) = split /\s+/, $patch;
 
-  # hmm.
+  # this stinks
   my @sha = run_git(qw(log --no-merges --format=%h --grep), $subject);
 
   # find the matching patch id, if we have one
   for my $sha (@sha) {
-    my $check = qx(git diff-tree -p $local | git patch-id);
+    my $check = qx(git diff-tree -p $sha | git patch-id);
     my ($check_id) = split /\s+/, $check;
 
     if ($check_id eq $patch_id) {
