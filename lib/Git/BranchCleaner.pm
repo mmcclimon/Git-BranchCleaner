@@ -57,6 +57,11 @@ has interactive => (
   default => 1,
 );
 
+has main_name => (
+  is => 'ro',
+  default => 'main',
+);
+
 sub run ($self) {
   $self->assert_local_ok;
   $self->do_initial_fetch;
@@ -105,7 +110,7 @@ sub assert_local_ok ($self) {
   my ($branch) = $branch_line =~ /branch\.head (.*)/;
 
   die "could not read status?\n" unless $branch;
-  die "cannot proceed from branch $branch\n" unless $branch =~ /^(main|master)$/n;
+  die "cannot proceed from branch $branch\n" unless $branch eq $self->main_name;
 }
 
 sub do_initial_fetch ($self) {
@@ -165,7 +170,8 @@ sub process_refs ($self) {
 
     my $main_sha = $self->check_merged($branch);
     if ($main_sha) {
-      _log(merged => "$branch appears in main as $main_sha");
+      my $main = $self->main_name;
+      _log(merged => "$branch appears in $main as $main_sha");
       push $self->to_delete->@*, $branch;
       next;
     }
@@ -249,7 +255,8 @@ sub check_merged ($self, $branch) {
   }
 
   if (@sha == 10) {
-    _log(warn => "$branch: subject matched > 10 commits in main; assuming unmerged");
+    my $main = $self->main_name;
+    _log(warn => "$branch: subject matched > 10 commits in $main; assuming unmerged");
   }
 
   return;
