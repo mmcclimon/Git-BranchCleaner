@@ -72,7 +72,7 @@ sub run ($self) {
 }
 
 # internal subs
-my sub _log ($level, $msg) {
+our sub _log ($level, $msg) {
   state %prefix_for = (
     note   => colored('NOTE    ', 'clear'),
     merged => colored('MERGED  ', 'green'),
@@ -85,7 +85,7 @@ my sub _log ($level, $msg) {
   say "$prefix $msg";
 }
 
-my sub run_git (@args) {
+our sub run_git (@args) {
   my @cmd = ('git', @args);
   my $out = capture_merged { system @cmd };
 
@@ -168,7 +168,7 @@ sub process_refs ($self) {
     my $local_sha  = $self->local_shas->{$branch};
     my $remote_sha = $self->remote_shas->{$branch};
 
-    my $main_sha = $self->check_merged($branch);
+    my $main_sha = $self->check_merged($branch, $local_sha);
     if ($main_sha) {
       my $main = $self->main_name;
       _log(merged => "$branch appears in $main as $main_sha");
@@ -234,11 +234,10 @@ sub _process_mismatched ($self, $branch) {
   }
 }
 
-sub check_merged ($self, $branch) {
-  my $local = $self->local_shas->{$branch};
-  my $subject = run_git(qw(show --no-patch --format=%s), $local);
+sub check_merged ($self, $branch, $have_sha) {
+  my $subject = run_git(qw(show --no-patch --format=%s), $have_sha);
 
-  my $patch = qx(git diff-tree -p $local | git patch-id);
+  my $patch = qx(git diff-tree -p $have_sha | git patch-id);
   my ($patch_id) = split /\s+/, $patch;
 
   # this stinks
