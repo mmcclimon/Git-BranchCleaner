@@ -1,0 +1,28 @@
+#!/usr/bin/env perl
+# PODNAME: git-tidy, to tidy up your branches
+use v5.30;
+use warnings;
+use Defined::KV qw(defined_kv);
+use Getopt::Long::Descriptive;
+use Git::BranchCleaner;
+use Git::BranchCleaner::Remote;
+
+my ($opt, $usage) = describe_options(
+  '%c %o',
+  [ 'upstream|u=s', 'upstream remote (default: gitbox)'   ],
+  [ 'personal|p=s', 'personal remote (default: michael)'  ],
+  [ 'remote', "clean personal remote branches, not local" ],
+  [ 'really', "do not ask, just do"                       ],
+  [ 'help|h', "print help and exit", { hidden => 1 }      ],
+);
+
+print($usage->text), exit if $opt->help;
+
+my $class = 'Git::BranchCleaner';
+$class .= '::Remote' if $opt->remote;
+
+$class->new({
+  defined_kv(upstream_remote => $opt->upstream),
+  defined_kv(personal_remote => $opt->personal),
+  really => !! $opt->really,
+})->run;

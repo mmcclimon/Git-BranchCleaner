@@ -13,24 +13,29 @@ my %WriteMakefileArgs = (
     "ExtUtils::MakeMaker" => 0
   },
   "DISTNAME" => "Git-BranchCleaner",
+  "EXE_FILES" => [
+    "bin/git-tidy"
+  ],
   "LICENSE" => "perl",
   "MIN_PERL_VERSION" => "5.030000",
   "NAME" => "Git::BranchCleaner",
   "PREREQ_PM" => {
     "Capture::Tiny" => 0,
     "Carp" => 0,
+    "Defined::KV" => 0,
+    "Getopt::Long::Descriptive" => 0,
     "IPC::System::Simple" => 0,
     "Moo" => 0,
     "Process::Status" => 0,
     "Term::ANSIColor" => 0,
-    "experimental" => 0
+    "experimental" => 0,
+    "warnings" => 0
   },
   "TEST_REQUIRES" => {
     "ExtUtils::MakeMaker" => 0,
     "File::Spec" => 0,
     "Test::More" => "0.96",
-    "strict" => 0,
-    "warnings" => 0
+    "strict" => 0
   },
   "VERSION" => "0.001",
   "test" => {
@@ -42,8 +47,10 @@ my %WriteMakefileArgs = (
 my %FallbackPrereqs = (
   "Capture::Tiny" => 0,
   "Carp" => 0,
+  "Defined::KV" => 0,
   "ExtUtils::MakeMaker" => 0,
   "File::Spec" => 0,
+  "Getopt::Long::Descriptive" => 0,
   "IPC::System::Simple" => 0,
   "Moo" => 0,
   "Process::Status" => 0,
