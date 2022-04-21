@@ -47,7 +47,7 @@ has to_update => (
   default => sub { {} },
 );
 
-has really => (
+has [qw( really skip_initial_fetch )] => (
   is => 'rwp',
   default => 0,
 );
@@ -114,6 +114,7 @@ sub assert_local_ok ($self) {
 }
 
 sub do_initial_fetch ($self) {
+  return if $self->skip_initial_fetch;
   fetch($self->upstream_remote);
   fetch($self->personal_remote);
 }

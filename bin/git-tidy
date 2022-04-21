@@ -11,6 +11,7 @@ my ($opt, $usage) = describe_options(
   '%c %o',
   [ 'upstream|u=s', 'upstream remote (default: gitbox)'   ],
   [ 'personal|p=s', 'personal remote (default: michael)'  ],
+  [ 'no-fetch|n',   'do not do initial fetches'           ],
   [ 'remote', "clean personal remote branches, not local" ],
   [ 'really', "do not ask, just do"                       ],
   [ 'help|h', "print help and exit", { hidden => 1 }      ],
@@ -24,5 +25,6 @@ $class .= '::Remote' if $opt->remote;
 $class->new({
   defined_kv(upstream_remote => $opt->upstream),
   defined_kv(personal_remote => $opt->personal),
-  really => !! $opt->really,
+  really              => !! $opt->really,
+  skip_initial_fetch  => $opt->no_fetch,
 })->run;
