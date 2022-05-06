@@ -12,6 +12,7 @@ my ($opt, $usage) = describe_options(
   [ 'upstream|u=s', 'upstream remote (default: gitbox)'   ],
   [ 'personal|p=s', 'personal remote (default: michael)'  ],
   [ 'no-fetch|n',   'do not do initial fetches'           ],
+  [ 'master',       'use master, not main'                ],
   [ 'remote', "clean personal remote branches, not local" ],
   [ 'really', "do not ask, just do"                       ],
   [ 'help|h', "print help and exit", { hidden => 1 }      ],
@@ -27,4 +28,5 @@ $class->new({
   defined_kv(personal_remote => $opt->personal),
   really              => !! $opt->really,
   skip_initial_fetch  => $opt->no_fetch,
+  ($opt->master ? (main_name => 'master') : ()),
 })->run;
