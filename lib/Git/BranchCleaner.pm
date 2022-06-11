@@ -8,6 +8,7 @@ use experimental 'signatures';
 use Carp qw(confess);
 use Capture::Tiny qw(capture_merged);
 use IPC::System::Simple qw(systemx);
+use POSIX qw(SIGINT);
 use Process::Status;
 use Term::ANSIColor qw(colored);
 
@@ -72,7 +73,7 @@ sub run ($self) {
 }
 
 # internal subs
-our sub _log ($level, $msg) {
+our sub _log ($level, $msg, $arg = {}) {
   state %prefix_for = (
     note   => colored('NOTE    ', 'clear'),
     merged => colored('MERGED  ', 'green'),
@@ -80,6 +81,8 @@ our sub _log ($level, $msg) {
     warn   => colored('WARN    ', 'bright_yellow'),
     ok     => colored('OK      ', 'green'),
   );
+
+  print "\n" if $arg->{prefix_newline};
 
   my $prefix = $prefix_for{$level} // confess("bad level: $level");
   say "$prefix $msg";
@@ -90,6 +93,13 @@ our sub run_git (@args) {
   my $out = capture_merged { system @cmd };
 
   my $ps = Process::Status->new;
+
+  # catch ^C and bail immediately
+  if ($ps->signal == SIGINT) {
+    _log(warn => "caught SIGINT, bailing out", { prefix_newline => 1 });
+    exit 1;
+  }
+
   unless ($ps->is_success) {
     _log(warn => "Error executing @cmd: " . $ps->as_string);
   }
